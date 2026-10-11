@@ -80,7 +80,7 @@ router.get('/:id', async (req, res) => {
     try {
         const [row] = await pool.query("SELECT * FROM opportunities WHERE id = ?", [ id ]);
         if (row.length === 0)
-            return res.status(404).json({ error: 'Record does not exist with that ID' })
+            return res.status(404).json({ error: 'Record does not exist with that ID' });
         return res.status(200).json(row[0]);
     }
     catch (err) {
@@ -90,7 +90,26 @@ router.get('/:id', async (req, res) => {
 });
 
 
+router.delete('/:id', async (req, res) => {
+    const id = req.params.id;
+    let _id = Number(id);
 
+    if (!Number.isInteger(_id))
+        return res.status(400).json({ error: 'Invalid id type!' });
+    if (_id < 1)    
+        return res.status(400).json({ error: 'ID value cannot be < 1' });
+
+    try {
+        const [row] = await pool.execute("DELETE FROM opportunities WHERE id = ?", [ id ]);
+        if (row.affectedRows === 0)
+            return res.status(404).json({ error: 'Record does not exist with that ID' });
+        return res.status(200).json(row);
+    }
+    catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 
 export default router;
