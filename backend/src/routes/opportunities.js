@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', async(req, res) => {
     try {
         const [rows] = await pool.query("SELECT * FROM opportunities;");
-        res.json(rows);
+        return res.status(200).json(rows);
     }
     catch (err) {
         console.error(err);
@@ -17,40 +17,55 @@ router.get('/', async(req, res) => {
 
 
 router.post('/', async (req, res) => {
-    const opp = {
-        title:          req.body.title,
-        desc:           req.body.description,
-        area:           req.body.area,
-        rsrchr_name:    req.body.researcher_name,
-        dep:            req.body.department,
-        rqrd_skills:    req.body.required_skills,
-        avail_pos:      req.body.available_positions,
-        deadline:       req.body.deadline,
-        status:         "Open"
-    };
+    const { title, description, area, researcher_name, department, 
+        required_skills, available_positions, deadline, status } = req.body;
 
-    if (!opp.title || !opp.area || !opp.rsrchr_name || !opp.dep || !opp.avail_pos || !opp.deadline)
-        res.status(400).json({ error: "1 or more requried fields are missing!"});
+    if (!title || !area || !researcher_name || !department || !deadline)
+        return res.status(400).json({ error: '1 or more requried fields are missing!'});
+
+    const dateFormat = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateFormat.test(deadline))
+        return res.status(400).json({ error: 'Invalid date format! use YYYY-MM-DD'});
+
+    let _deadline = new Date(deadline);
+    if (isNaN(_deadline))
+        return res.status(400).json({ error: 'Invalid date!'});
+    if (_deadline.toISOString().slice(0, 10) !== deadline)
+        return res.status(400).json({ error: "Entered date does not exist!"});
+
+    let _available_positions = available_positions;
+    if (!_available_positions)
+        _available_positions = 0;
+    else if (!Number.isInteger(_available_positions))
+        return res.status(400).json({ error: 'available positions needs to be an integer!'});
+    else if (_available_positions < 0)
+        return res.status(400).json({ error: 'Invalid available positions count!'});
+    let _status = status;
+    if (Number.isInteger(_status))
+        return res.status(400).json({ error: 'Invalid status type!'});
+    if (!_status)
+        _status = 'open';
+    else {
+        _status = _status.toLowerCase();
+        
+        if (_status !== 'open' && _status !== 'closed')
+            return res.status(400).json({ error: 'Invalid status!'});
+    }
 
     try {
-        await pool.execute(`INSERT INTO opportunities (
-            title, 
-            description, 
-            area, 
-            researcher_name, 
-            department, 
-            required_skills, 
-            available_positions, 
-            deadline, 
-            status)
+        const createdOpp = await pool.execute(`INSERT INTO opportunities (title, description, area, researcher_name, 
+            department, required_skills, available_positions, deadline, status)
             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-            [opp.title, opp.desc, opp.area, opp.rsrchr_name, opp.dep, 
-                opp.rqrd_skills, opp.avail_pos, opp.deadline, opp.status]);
+            [title, description ?? null, area, researcher_name, department, 
+                required_skills ?? null, _available_positions, deadline, _status]);
         
-        res.status(200).json()
+        return res.status(201).json(createdOpp);
     }
     catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Internal Server Error!" });
+        return res.status(500).json({ error: "Internal Server Error!" });
     }
 });
+
+
+export default router;
