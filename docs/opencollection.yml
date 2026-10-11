@@ -1,0 +1,51 @@
+opencollection: 1.0.0
+
+info:
+  name: CN_Assignment_1
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+docs:
+  content: |-
+    Welcome to your collection documentation! This space is designed to help you document your API collection effectively.
+
+    ## Overview
+
+    Use this section to provide a high-level overview of your collection. You can describe:
+
+    - The purpose of these API endpoints
+    - Key features and functionalities
+    - Target audience or users
+
+    ## Best Practices
+
+    - Keep documentation up to date
+    - Include request/response examples
+    - Document error scenarios
+    - Add relevant links and references
+
+    ## Markdown Support
+
+    This documentation supports Markdown formatting! You can use:
+
+    - **Bold** and *italic* text
+    - `code blocks` and syntax highlighting
+    - Tables and lists
+    - [Links](https://usebruno.com)
+    - And more!
+  type: text/markdown
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

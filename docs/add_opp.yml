@@ -1,0 +1,49 @@
+info:
+  name: add_opp
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://127.0.0.1:3000/api/opportunities
+  body:
+    type: json
+    data: |-
+      // {
+      //   "title": "Machine Learning for Network Intrusion Detection",
+      //   "description": "Work on anomaly detection models using the NSL-KDD dataset.",
+      //   "area": "Machine Learning",
+      //   "researcher_name": "Dr. Ayesha Khan",
+      //   "department": "Computer Science",
+      //   "required_skills": "Python, scikit-learn, pandas",
+      //   "available_positions": 2,
+      //   "deadline": "2026-12-31",
+      //   "status": 5
+      // }
+      // {
+      //   "title": "Low-Power Sensor Networks",
+      //   "description": "Design and test energy-efficient routing for IoT sensors.",
+      //   "area": "Embedded Systems",
+      //   "researcher_name": "Dr. Imran Shah",
+      //   "department": "Electrical Engineering",
+      //   "required_skills": "C, microcontrollers, networking basics",
+      //   "available_positions": 3,
+      //   "deadline": "2026-11-30",
+      //   "status": "Open"
+      // }
+      // {
+      //   "title": "Usability of University Web Portals",
+      //   "area": "Human-Computer Interaction",
+      //   "researcher_name": "Dr. Sana Malik",
+      //   "department": "Computer Science",
+      //   "available_positions": 1,
+      //   "deadline": "2027-01-15"
+      // }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

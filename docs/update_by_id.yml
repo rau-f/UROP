@@ -1,0 +1,30 @@
+info:
+  name: update_by_id
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: http://127.0.0.1:3000/api/opportunities/5
+  body:
+    type: json
+    data: |
+      {
+        "title": "Senior Research Assistant",
+        "description": "Assisting with advanced AI dataset collation.",
+        "area": "Computer Science",
+        "researcher_name": "Dr. Sarah Jenkins",
+        "department": "Engineering",
+        "required_skills": "Python, SQL, Machine Learning",
+        "available_positions": 3,
+        "deadline": "2026-12-31",
+        "status": "open"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
