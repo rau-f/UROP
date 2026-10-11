@@ -4,7 +4,14 @@ import pool from "../db.js"
 const router = express.Router();
 
 
-router.get('/', async (req, res) => {
+router.get('/', get_all_opportunities);
+router.get('/:id', get_opp_by_id);
+router.post('/', create_opportunity);
+router.delete('/:id', delete_by_id);
+router.put('/:id', update_by_id);
+
+
+async function get_all_opportunities(req, res) {
     try {
         const [rows] = await pool.query("SELECT * FROM opportunities;");
         return res.status(200).json(rows);
@@ -13,10 +20,10 @@ router.get('/', async (req, res) => {
         console.error(err);
         res.status(500).json({ error: "Internal Server Error!" });
     }
-});
+}
 
 
-router.post('/', async (req, res) => {
+async function create_opportunity(req, res) {
     const { title, description, area, researcher_name, department, 
         required_skills, available_positions, deadline, status } = req.body;
 
@@ -65,10 +72,10 @@ router.post('/', async (req, res) => {
         console.error(err);
         return res.status(500).json({ error: "Internal Server Error!" });
     }
-});
+}
 
 
-router.get('/:id', async (req, res) => {
+async function get_opp_by_id(req, res) {
     const id = req.params.id;
     let _id = Number(id);
 
@@ -87,16 +94,16 @@ router.get('/:id', async (req, res) => {
         console.error(err);
         return res.status(500).json({ error: "Internal server error" });
     }
-});
+}
 
 
-router.delete('/:id', async (req, res) => {
+async function delete_by_id(req, res) {
     const id = req.params.id;
     let _id = Number(id);
 
     if (!Number.isInteger(_id))
         return res.status(400).json({ error: 'Invalid id type!' });
-    if (_id < 1)    
+    if (_id < 1)
         return res.status(400).json({ error: 'ID value cannot be < 1' });
 
     try {
@@ -109,7 +116,20 @@ router.delete('/:id', async (req, res) => {
         console.error(err);
         return res.status(500).json({ error: "Internal server error" });
     }
-});
+}
+
+
+async function update_by_id(res, req) {
+    const id = req.params.id;
+    let _id = Number(id);
+
+    if (!Number.isInteger(_id))
+        return res.status(400).json({ error: 'Invalid id type!'});
+    if (_id < 1)
+        return res.status(400).json({ error: 'ID value cannot be < 1' });
+
+
+}
 
 
 export default router;
